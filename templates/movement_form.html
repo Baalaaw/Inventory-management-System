@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} Movement - Inventory Management{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ action }} Product Movement</h1>
+
+<form method="POST">
+    <div class="form-group">
+        <label for="movement_id">Movement ID *</label>
+        <input type="text" id="movement_id" name="movement_id"
+               value="{{ movement.movement_id if movement else '' }}"
+               required
+               {% if action == 'Edit' %}readonly style="background: #e9ecef;"{% endif %}>
+    </div>
+
+    <div class="form-group">
+        <label for="product_id">Product *</label>
+        <select id="product_id" name="product_id" required>
+            <option value="">-- Select Product --</option>
+            {% for product in products %}
+            <option value="{{ product.product_id }}"
+                    {% if movement and movement.product_id == product.product_id %}selected{% endif %}>
+                {{ product.product_name }} ({{ product.product_id }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="from_location">From Location</label>
+        <select id="from_location" name="from_location">
+            <option value="">-- Select From Location (Leave empty for incoming stock) --</option>
+            {% for location in locations %}
+            <option value="{{ location.location_id }}"
+                    {% if movement and movement.from_location == location.location_id %}selected{% endif %}>
+                {{ location.location_name }} ({{ location.location_id }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="to_location">To Location</label>
+        <select id="to_location" name="to_location">
+            <option value="">-- Select To Location (Leave empty for outgoing stock) --</option>
+            {% for location in locations %}
+            <option value="{{ location.location_id }}"
+                    {% if movement and movement.to_location == location.location_id %}selected{% endif %}>
+                {{ location.location_name }} ({{ location.location_id }})
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="qty">Quantity *</label>
+        <input type="number" id="qty" name="qty"
+               value="{{ movement.qty if movement else '' }}"
+               min="1" required>
+    </div>
+
+    <div style="background: #fff3cd; padding: 15px; border-radius: 6px; margin-bottom: 25px; color: #856404; border: 1px solid #ffeaa7;">
+        <strong>Note:</strong> At least one location (from or to) must be selected. Leave "From Location" empty for incoming stock, or leave "To Location" empty for outgoing stock.
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">{{ action }} Movement</button>
+        <a href="{{ url_for('movements') }}" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}

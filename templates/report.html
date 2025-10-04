@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Balance Report - Inventory Management{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Inventory Balance Report</h1>
+
+<p style="color: #6c757d; margin-bottom: 30px; font-size: 1.1rem;">
+    Current stock levels for all products across all locations
+</p>
+
+{% if balances %}
+<table class="report-table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Location</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for balance in balances %}
+        <tr>
+            <td>
+                <strong>{{ balance.product_name }}</strong><br>
+                <small style="color: #6c757d;">{{ balance.product_id }}</small>
+            </td>
+            <td>
+                <strong>{{ balance.location_name }}</strong><br>
+                <small style="color: #6c757d;">{{ balance.location_id }}</small>
+            </td>
+            <td>
+                <span style="font-size: 1.2rem; font-weight: 700; color: {% if balance.balance > 0 %}#28a745{% else %}#dc3545{% endif %};">
+                    {{ balance.balance }}
+                </span>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+    <div class="empty-state-icon">📊</div>
+    <h3>No Balance Data Available</h3>
+    <p>Add products, locations, and movements to see the balance report.</p>
+    <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
+        <a href="{{ url_for('products') }}" class="btn btn-primary">Add Products</a>
+        <a href="{{ url_for('locations') }}" class="btn btn-primary">Add Locations</a>
+        <a href="{{ url_for('movements') }}" class="btn btn-primary">Add Movements</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
